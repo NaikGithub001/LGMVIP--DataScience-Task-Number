@@ -1,0 +1,121 @@
+## LGMVIP August Data Science Internship task1
+
+#Iris Flower Classification ML Project
+
+## Importing Libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+from sklearn import metrics
+import seaborn as sns
+
+## Importing Dataset
+
+dataset = pd.read_csv('C:/Users/Dell/OneDrive/Desktop/iris.csv')
+
+dataset.head
+
+dataset.head(100)
+
+dataset.tail(100)
+
+dataset.shape
+
+dataset.isnull().sum()
+
+dataset.isnull()
+
+print(dataset['classes'].describe())
+
+print(dataset['classes'].value_counts())
+
+x=dataset.iloc[:,[0,1,2,3]].values
+
+x
+
+y=dataset.iloc[:,4].values
+
+y
+
+dataset.dtypes
+
+xtrain, xtest, ytrain, ytest = train_test_split(x, y, test_size=0.25, random_state=0)
+
+sc = StandardScaler()
+xtrain = sc.fit_transform(xtrain)
+xtest = sc.transform(xtest)
+
+#Tree induction using Gini Index
+dtree_gini = DecisionTreeClassifier(criterion = "gini", random_state = 100,max_depth=3, 
+min_samples_leaf=5)
+dtree_gini.fit(xtrain, ytrain)
+
+y_pred1 = dtree_gini.predict(xtest)
+print("Predicted values:")
+y_pred1
+
+## Perform the Accuracy of Iris dataset
+
+accgini= accuracy_score(ytest,y_pred1)*100
+print ("\n\nAccuracy using Gini Index: ", accgini)
+
+data=dataset.groupby('classes')
+
+cm = confusion_matrix(ytest, y_pred1)
+print ("\n\n Confusion Matrix -using Gini Index: \n", cm)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.imshow(cm)
+ax.grid(False)
+ax.xaxis.set(ticks=(0,1,2), ticklabels=('Predicted Setosa', 'Predicted Versicolor', 'Predicted Virginica'))
+ax.yaxis.set(ticks=(0,1,2), ticklabels=('Actual Setosa', 'Actual Versicolor', 'Actual Virginica'))
+ax.set_ylim(2.5, -0.5)
+for i in range(3):
+   for j in range(3):
+      ax.text(j, i, cm[i, j], ha='center', va='center', color='white')
+plt.show()
+
+print("\n\nClassification Report – Using Gini Index: \n",classification_report(ytest, y_pred1))
+
+
+
+data.head()
+
+dataset['classes'].unique()
+
+dataset.info()
+
+## Visualization of Iris Data(classification)
+
+tree.plot_tree(dtree_gini)
+
+dataset.plot(kind='box',subplots=True,layout=(7,2),figsize=(15,20))
+
+fig=plt.figure()
+ax=fig.add_axes([0,0,1,1])
+ax.axis('equal')
+l=['versicolor','virginica','setosa']
+s=[50,50,50]
+ax.pie(s, labels=l,autopct='%1.2f%%')
+plt.show()
+
+dataset
+
+sns.pairplot(dataset,hue='classes')
+
+sns.heatmap(dataset.corr())
+
+dataset.plot(kind='density',subplots=True,layout=(2,2),sharex=False)
+
+
+
+dataset.hist()
+plt.show()
